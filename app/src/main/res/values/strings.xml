@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">ShoppingList</string>
+    <string name="archived_lists">Archived Lists</string>
+    <string name="divider">/</string>
+    <string name="list_name">List name</string>
+    <string name="enter_list_name">Enter list name</string>
+    <string name="dialog_add_btn">Add</string>
+    <string name="item_name">Item name</string>
+    <string name="enter_item_name">Enter item name</string>
+    <string name="list_archived">List archived successfully!</string>
+    <string name="archive_hint">Hint: long press to archive</string>
+</resources>
