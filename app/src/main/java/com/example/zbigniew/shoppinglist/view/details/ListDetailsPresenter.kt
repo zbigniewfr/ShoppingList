@@ -36,7 +36,6 @@ constructor(
 
     interface View : MvpView {
         fun showItems(items: MutableList<ItemModel>)
-        fun addItem(itemModel: ItemModel)
         fun setTitle(name: String)
     }
 
@@ -56,13 +55,6 @@ constructor(
         val id = db.addItem(item)
         shoppingList.allItemsCount++
         updateShoppingList()
-        db.getItem(id)
-                .subscribe({
-                    view?.addItem(it)
-                }, {
-                    it.printStackTrace()
-                })
-                .registerInPresenter()
     }
 
     fun updateItem(item: ItemModel) {

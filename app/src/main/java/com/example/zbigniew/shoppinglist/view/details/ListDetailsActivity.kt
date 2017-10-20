@@ -120,8 +120,4 @@ class ListDetailsActivity : AppCompatActivity(), ListDetailsPresenter.View {
     override fun showItems(items: MutableList<ItemModel>) {
         adapter.setData(items)
     }
-
-    override fun addItem(itemModel: ItemModel) {
-        adapter.addItem(itemModel)
-    }
 }
