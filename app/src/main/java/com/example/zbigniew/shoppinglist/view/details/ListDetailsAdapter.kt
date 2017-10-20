@@ -6,17 +6,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.example.zbigniew.shoppinglist.R
 import com.example.zbigniew.shoppinglist.helpers.ItemClickListener
-import com.example.zbigniew.shoppinglist.helpers.ListClickListener
 import com.example.zbigniew.shoppinglist.helpers.replaceData
 import com.example.zbigniew.shoppinglist.model.ItemModel
 
-class ListDetailsAdapter(context: Context) : RecyclerView.Adapter<ItemViewHolder>() {
+class ListDetailsAdapter(context: Context, val isArchived: Boolean) : RecyclerView.Adapter<ItemViewHolder>() {
 
     private var items: MutableList<ItemModel> = mutableListOf()
     lateinit var clickListener: ItemClickListener<ItemModel>
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(items[position], position)
+        holder.bind(items[position], position, isArchived)
     }
 
     override fun getItemCount(): Int = items.size

@@ -53,15 +53,7 @@ constructor(
 
     fun addList(listName: String) {
         val shoppingList = ShoppingListModel(-1, listName, Date().time, false, mutableListOf(), 0, 0)
-        val id = db.saveShoppingList(shoppingList)
-        db.getListById(id)
-                .subscribe(
-                        {
-                            view?.addList(it)
-                        }, {
-                    it.printStackTrace()
-                })
-                .registerInPresenter()
+        db.saveShoppingList(shoppingList)
     }
 
     fun archiveList(item: ShoppingListModel) {
@@ -70,6 +62,5 @@ constructor(
 
     interface View : MvpView {
         fun showShoppingLists(shoppingLists: MutableList<ShoppingListModel>)
-        fun addList(listModel: ShoppingListModel?)
     }
 }

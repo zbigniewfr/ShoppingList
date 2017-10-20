@@ -28,6 +28,7 @@ constructor(
                 .map { it.sortedWith(compareByDescending({ it.id })).toMutableList() }
                 .compose(applyTransformerFlowable())
                 .subscribe({
+                    view?.setupView()
                     view?.showItems(it)
                 }, {
                     it.printStackTrace()
@@ -37,22 +38,21 @@ constructor(
     interface View : MvpView {
         fun showItems(items: MutableList<ItemModel>)
         fun setTitle(name: String)
+        fun setupView()
     }
 
     fun removeItem(item: ItemModel) {
-        if (!shoppingList.isArchived) {
-            db.removeItem(item.id)
-            if(item.isChecked){
-                shoppingList.checkedItemsCount--
-            }
-            shoppingList.allItemsCount--
-            updateShoppingList()
+        db.removeItem(item.id)
+        if (item.isChecked) {
+            shoppingList.checkedItemsCount--
         }
+        shoppingList.allItemsCount--
+        updateShoppingList()
     }
 
     fun addItem(itemName: String) {
         val item = ItemModel(-1, itemName, false, listId)
-        val id = db.addItem(item)
+        db.addItem(item)
         shoppingList.allItemsCount++
         updateShoppingList()
     }

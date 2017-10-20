@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.example.zbigniew.shoppinglist.R
 import com.example.zbigniew.shoppinglist.model.ShoppingListModel
 import com.example.zbigniew.shoppinglist.helpers.ListClickListener
+import com.example.zbigniew.shoppinglist.helpers.replaceData
 
 
 class ShoppingListsAdapter(context: Context) : RecyclerView.Adapter<ShoppingListItemViewHolder>() {
@@ -27,16 +28,7 @@ class ShoppingListsAdapter(context: Context) : RecyclerView.Adapter<ShoppingList
         return view
     }
 
-    fun setData(newShoppingLists: List<ShoppingListModel>) {
-        shoppingLists.clear()
-        shoppingLists.addAll(newShoppingLists)
-        notifyDataSetChanged()
-    }
-
-    fun addItem(newShoppingList: ShoppingListModel) {
-        shoppingLists.add(0, newShoppingList)
-        notifyItemInserted(0)
-    }
+    fun setData(newShoppingLists: List<ShoppingListModel>) = replaceData(shoppingLists, newShoppingLists)
 
     fun removeList(position: Int) {
         shoppingLists.removeAt(position)

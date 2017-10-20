@@ -50,7 +50,6 @@ class ShoppingListActivity : AppCompatActivity(), ShoppingListsPresenter.View {
         adapter = ShoppingListsAdapter(this)
         setMode()
         setupRecycler()
-        Toast.makeText(this, getString(R.string.archive_hint), Toast.LENGTH_LONG).show()
     }
 
     private fun setMode() {
@@ -65,6 +64,8 @@ class ShoppingListActivity : AppCompatActivity(), ShoppingListsPresenter.View {
 
         if (presenter.mode == Mode.ARCHIVE) {
             title = getString(R.string.archived_lists)
+        }else{
+            Toast.makeText(this, getString(R.string.archive_hint), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -117,16 +118,20 @@ class ShoppingListActivity : AppCompatActivity(), ShoppingListsPresenter.View {
                 .customView(R.layout.add_list_dialog_layout, wrapInScrollView)
                 .positiveText(getString(R.string.dialog_add_btn))
                 .onPositive { dialog, _ ->
-                    handleDialogClose(dialog)
+                    handleAddList(dialog)
                 }
                 .build()
                 .show()
     }
 
-    private fun handleDialogClose(dialog: MaterialDialog) {
+    private fun handleAddList(dialog: MaterialDialog) {
         val editText = dialog.customView?.findViewById<EditText>(R.id.listName)
-        val listName = editText?.text
-        presenter.addList(listName.toString())
+        val listName = editText?.text.toString()
+        if(listName.isNotEmpty()) {
+            presenter.addList(listName.toString())
+        }else{
+            Toast.makeText(this@ShoppingListActivity, getString(R.string.list_name_empty), Toast.LENGTH_SHORT).show()
+        }
         dialog.dismiss()
     }
 
@@ -166,11 +171,5 @@ class ShoppingListActivity : AppCompatActivity(), ShoppingListsPresenter.View {
 
     override fun showShoppingLists(shoppingLists: MutableList<ShoppingListModel>) {
         adapter.setData(shoppingLists)
-    }
-
-    override fun addList(listModel: ShoppingListModel?) {
-        listModel?.let {
-            adapter.addItem(listModel)
-        }
     }
 }

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.widget.EditText
+import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.example.zbigniew.shoppinglist.R
 import com.example.zbigniew.shoppinglist.ShoppingListApp
@@ -40,9 +41,6 @@ class ListDetailsActivity : AppCompatActivity(), ListDetailsPresenter.View {
         setContentView(R.layout.shopping_list_activity)
         ShoppingListApp.baseComponent.inject(this)
         presenter.attachView(this)
-        adapter = ListDetailsAdapter(this)
-        setupRecycler()
-        initFab()
         setupPresenter()
     }
 
@@ -54,15 +52,20 @@ class ListDetailsActivity : AppCompatActivity(), ListDetailsPresenter.View {
         presenter.loadShoppingListItems()
     }
 
-    private fun initFab() {
-        presenter.addDisposable(
-                RxView.clicks(addFab)
-                        .subscribe({
-                            openAddItemDialog()
-                        }, {
-                            it.printStackTrace()
-                        })
-        )
+    override fun setupView() {
+        setupRecycler()
+        if (presenter.shoppingList.isArchived) {
+            addFab.hide()
+        } else {
+            presenter.addDisposable(
+                    RxView.clicks(addFab)
+                            .subscribe({
+                                openAddItemDialog()
+                            }, {
+                                it.printStackTrace()
+                            })
+            )
+        }
     }
 
     override fun setTitle(name: String) {
@@ -81,7 +84,6 @@ class ListDetailsActivity : AppCompatActivity(), ListDetailsPresenter.View {
     }
 
     private fun handleDialogClose(dialog: MaterialDialog) {
-        Log.d("Zygi", "Dialog callback")
         val editText = dialog.customView?.findViewById<EditText>(R.id.itemName)
         val itemName = editText?.text.toString()
         presenter.addItem(itemName)
@@ -89,10 +91,11 @@ class ListDetailsActivity : AppCompatActivity(), ListDetailsPresenter.View {
     }
 
     private fun setupRecycler() {
+        adapter = ListDetailsAdapter(this, presenter.shoppingList.isArchived)
         adapter.clickListener = object : ItemClickListener<ItemModel> {
 
             override fun onItemChecked(item: ItemModel) {
-                presenter.updateItem(item)
+                    presenter.updateItem(item)
             }
 
             override fun onItemDeleted(item: ItemModel, position: Int) {
@@ -106,10 +109,10 @@ class ListDetailsActivity : AppCompatActivity(), ListDetailsPresenter.View {
         shoppingListsRecyclerView.adapter = adapter
     }
 
-    private fun removeItemFromAdapter(position: Int) {
-        if (!presenter.shoppingList.isArchived) {
-            adapter.removeItem(position)
-        }
+    private fun removeItemFromAdapter(position: Int) = if (!presenter.shoppingList.isArchived) {
+        adapter.removeItem(position)
+    } else {
+        Toast.makeText(this@ListDetailsActivity, getString(R.string.cannot_remove_item), Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroy() {
